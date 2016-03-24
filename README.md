@@ -1,0 +1,2 @@
+# pickaxe
+Bitcoin mining pool
