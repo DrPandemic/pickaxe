@@ -1,0 +1,25 @@
+{
+  "name": "pickaxe-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "run": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DrPandemic/pickaxe.git"
+  },
+  "author": "@JesseEmond and @DrPandemic",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/DrPandemic/pickaxe/issues"
+  },
+  "homepage": "https://github.com/DrPandemic/pickaxe",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-typescript": "^2.12.1",
+    "merge2": "^1.0.1"
+  }
+}
