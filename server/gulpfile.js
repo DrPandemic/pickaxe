@@ -8,12 +8,16 @@ gulp.task('scripts', function() {
   var tsResult = tsProject.src() // instead of gulp.src(...)
     .pipe(ts(tsProject));
 
-  return merge([ // Merge the two output streams, so this task is finished when the IO of both operations are done.
-    tsResult.dts.pipe(gulp.dest('release/definitions')),
-    tsResult.js.pipe(gulp.dest('release/js'))
-  ]);
+    return tsResult.js.pipe(gulp.dest('release'));
 });
-gulp.task('watch', ['scripts'], function() {
-    gulp.watch('src/*.ts', ['scripts']);
+
+gulp.task('watch', ['scripts', 'copy'], function() {
+    gulp.watch('src/*.ts', ['scripts', 'copy']);
 });
+
 gulp.task('default', ['watch']);
+
+gulp.task('copy', function() {
+  return gulp.src('src/*.json')
+    .pipe(gulp.dest('release/src'));
+});
