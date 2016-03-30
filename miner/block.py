@@ -1,3 +1,8 @@
+from struct import pack
+
+from helpers import to_internal_byte_order
+
+
 class Block:
     """
     Bitcoin block that we want to ultimately find a hash for as a miner.
@@ -11,3 +16,20 @@ class Block:
         self.time = time
         self.difficulty = difficulty
         self.nounce = 0
+
+        assert(len(self.previous_block_hash) == 32)
+        assert(len(self.merkle_tree.root) == 32)
+
+    def serialize_header(self):
+        """
+        Serializes the header of the block to a bytes object.
+
+        This is the chunk of bytes that we want to hash in our search for a
+        valid hash.
+        """
+        return (pack("<i", self.version) +
+                to_internal_byte_order(self.previous_block_hash) +
+                to_internal_byte_order(self.merkle_tree.root) +
+                pack("<i", self.time) +
+                pack("<i", self.difficulty) +
+                pack("<i", self.nounce))
