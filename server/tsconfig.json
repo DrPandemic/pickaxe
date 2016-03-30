@@ -6,7 +6,8 @@
         "preserveConstEnums": true,
         "outDir": "release",
         "sourceMap": true,
-        "target": "es5"
+        "target": "es6",
+        "src": "src"
     },
     "exclude": [
         "node_modules"

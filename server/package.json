@@ -21,5 +21,8 @@
     "gulp": "^3.9.1",
     "gulp-typescript": "^2.12.1",
     "merge2": "^1.0.1"
+  },
+  "dependencies": {
+    "bitcoin-core": "^1.0.0"
   }
 }
