@@ -8,9 +8,9 @@ class TestBlock(unittest.TestCase):
         pass
 
     def test_init(self):
-        prev = 0x123123
+        prev = bytes([123] * 32)
         tree = TestBlock.MerkleTreeMock()
-        time = 0x432432
+        time = 432432
         bits = 0x1a44b9f2
 
         b = Block(prev, tree, time, bits)
