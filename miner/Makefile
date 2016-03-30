@@ -8,4 +8,3 @@ test:
 
 coverage:
 	coverage run -m --branch $(UNIT_TESTS)
-	coverage report -m
