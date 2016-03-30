@@ -1,0 +1,5 @@
+# Python caches
+__pycache__
+
+# Test coverage
+.coverage

@@ -1,0 +1,4 @@
+language: python
+python: 3.5
+install: make -C miner install
+script: make -C miner test
