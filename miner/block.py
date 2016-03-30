@@ -10,6 +10,17 @@ class Block:
     VERSION = 2
 
     def __init__(self, previous_block_hash, merkle_tree, time, difficulty):
+        """
+        Creates a Bitcoin block.
+
+        :param previous_block_hash: hash (RPC byte order) of the previous block
+                                    in the blockchain
+        :param merkle_tree:         merkle tree of the transactions in the
+                                    block
+        :param time:                Unix time since epoch in seconds
+        :param difficulty:          Packed representation (bits) of the current
+                                    network's difficulty
+        """
         self.version = Block.VERSION
         self.previous_block_hash = previous_block_hash
         self.merkle_tree = merkle_tree
