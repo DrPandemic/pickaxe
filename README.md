@@ -1,10 +1,9 @@
 # Pickaxe
-Bitcoin mining pool
+Bitcoin Mining Pool
 
 ## Miner
 ### Install
 `make install` (possibly requires `sudo`)
 ### Run tests
-`make test`
-
-To view the unit test branch coverage, run `make coverage`
+- Unit tests: `make test`
+- Unit tests with branch coverage: `make coverage`
