@@ -19,17 +19,19 @@ class Block:
                                     block
         :param time:                Unix time since epoch in seconds
         :param difficulty:          Packed representation (bits) of the current
-                                    network's difficulty
+                                    network's difficulty as an integer
         """
+        assert(type(previous_block_hash) == bytes)
+        assert(type(difficulty) == int)
+        assert(len(previous_block_hash) == 32)
+        assert(len(merkle_tree.root) == 32)
+
         self.version = Block.VERSION
         self.previous_block_hash = previous_block_hash
         self.merkle_tree = merkle_tree
         self.time = time
         self.difficulty = difficulty
         self.nounce = 0
-
-        assert(len(self.previous_block_hash) == 32)
-        assert(len(self.merkle_tree.root) == 32)
 
     def serialize_header(self):
         """
@@ -38,9 +40,9 @@ class Block:
         This is the chunk of bytes that we want to hash in our search for a
         valid hash.
         """
-        return (pack("<i", self.version) +
+        return (pack("<I", self.version) +
                 to_internal_byte_order(self.previous_block_hash) +
                 to_internal_byte_order(self.merkle_tree.root) +
-                pack("<i", self.time) +
-                pack("<i", self.difficulty) +
-                pack("<i", self.nounce))
+                pack("<I", self.time) +
+                pack("<I", self.difficulty) +
+                pack("<I", self.nounce))
