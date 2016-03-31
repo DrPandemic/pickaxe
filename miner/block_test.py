@@ -54,8 +54,9 @@ class TestBlock(unittest.TestCase):
         self.assertEqual(header, b.serialize_header())
 
     def test_serialize_header_unsigned_ints(self):
-        # must support high nounces
-
+        """
+        Verifies that we support high nounces.
+        """
         tree = TestBlock.MerkleTreeMock()
         prev = to_rpc_byte_order(bytes([12] * 32))
         time = 0x12121212
