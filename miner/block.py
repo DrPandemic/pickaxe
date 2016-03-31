@@ -31,7 +31,7 @@ class Block:
         self.merkle_tree = merkle_tree
         self.time = time
         self.difficulty = difficulty
-        self.nounce = 0
+        self.nounce = None
 
     def serialize_header(self):
         """

@@ -14,6 +14,7 @@ class TestBlock(unittest.TestCase):
         tree = TestBlock.MerkleTreeMock()
         time = 432432
         bits = 0x1a44b9f2
+        nounce = None
 
         b = Block(prev, tree, time, bits)
 
@@ -22,6 +23,7 @@ class TestBlock(unittest.TestCase):
         self.assertEqual(tree, b.merkle_tree)
         self.assertEqual(time, b.time)
         self.assertEqual(bits, b.difficulty)
+        self.assertEqual(nounce, b.nounce)
 
     def test_serialize_header(self):
         # example taken from:
