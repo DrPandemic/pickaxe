@@ -12,7 +12,7 @@ function testZmq(type_: zmq.types) {
   switch(type_) {
     case "push":
       sock.bindSync("tcp://127.0.0.1:3000");
-      sock.send("some work");
+      sock.send(JSON.stringify({1:5}));
       break;
     case "pull":
       sock.connect("tcp://127.0.0.1:3000");
@@ -20,8 +20,11 @@ function testZmq(type_: zmq.types) {
         console.log('work: %s', msg.toString());
       });
     case "pub":
-      break;
-    case "sub":
+      sock.bindSync("tcp://127.0.0.1:3000");
+      sock.send(JSON.stringify({1:5}));
+      setInterval(() => {
+        sock.send(JSON.stringify({some_nice: "jewellery"}));
+      }, 1000);
       break;
     default:
       throw new Error();
