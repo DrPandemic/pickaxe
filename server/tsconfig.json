@@ -6,8 +6,10 @@
         "preserveConstEnums": true,
         "outDir": "release",
         "sourceMap": true,
-        "target": "es6",
-        "src": "src"
+        "target": "es5",
+        "src": "src",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true
     },
     "exclude": [
         "node_modules"

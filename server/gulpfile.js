@@ -12,7 +12,7 @@ gulp.task('scripts', function() {
 });
 
 gulp.task('watch', ['scripts', 'copy'], function() {
-    gulp.watch('src/*.ts', ['scripts', 'copy']);
+    gulp.watch('src/**/*.ts', ['scripts', 'copy']);
 });
 
 gulp.task('default', ['watch']);

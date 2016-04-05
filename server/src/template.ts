@@ -1,8 +1,8 @@
-interface Coinbaseaux {
+export interface Coinbaseaux {
   flag: string;
 }
 
-interface Transaction {
+export interface Transaction {
   data: string;
   hash: string;
   depends: number[];
@@ -10,7 +10,7 @@ interface Transaction {
   sigops: number;
 }
 
-class ITemplate {
+export class BlockTemplate {
   capabilities: string[];
   version: number;
   previousblockhash: string;
@@ -31,13 +31,11 @@ class ITemplate {
   [key: string]: any;
 }
 
-class Template extends ITemplate {
-  constructor(obj: ITemplate) {
+export class Template extends BlockTemplate {
+  constructor(obj: BlockTemplate) {
     super();
     for (let propName in obj) {
       this[propName] = <any>obj[propName]
     }
   }
 }
-
-export default Template;
