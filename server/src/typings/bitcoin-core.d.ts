@@ -3,6 +3,10 @@
 
 declare module "bitcoin-core" {
   namespace BitcoinCore {
+    /*
+     * This is a code duplication with the template definition, but I don't know
+     * how not to.
+     */
     interface Coinbaseaux {
       flag: string;
     }

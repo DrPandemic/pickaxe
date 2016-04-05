@@ -25,6 +25,8 @@ declare module "zmq" {
     send(data: any, flag?: number): void;
 
     connect(address: string): Socket;
+
+    close(): Socket;
   }
 
   export function socket(type_: types): Socket;

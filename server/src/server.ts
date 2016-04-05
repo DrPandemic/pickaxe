@@ -1,52 +1,85 @@
-/// <reference path="typings/bitcoin-core.d.ts"/>
 /// <reference path="typings/zmq.d.ts"/>
 /// <reference path="../typings/node/node.d.ts"/>
 
-const creds = require("./credentials.json");
-import * as Client from "bitcoin-core";
-import {BlockTemplate, Template} from "./template";
 import * as zmq from "zmq";
+const assert = require('assert');
 
-function testZmq(type_: zmq.types) {
-  let sock = zmq.socket(type_);
-  switch(type_) {
-    case "push":
-      sock.bindSync("tcp://127.0.0.1:3000");
-      sock.send(JSON.stringify({1:5}));
-      break;
-    case "pull":
-      sock.connect("tcp://127.0.0.1:3000");
-      sock.on("message", function(msg: any){
-        console.log('work: %s', msg.toString());
-      });
-    case "pub":
-      sock.bindSync("tcp://127.0.0.1:3000");
-      sock.send(JSON.stringify({1:5}));
-      setInterval(() => {
-        sock.send(JSON.stringify({some_nice: "jewellery"}));
-      }, 1000);
-      break;
-    default:
-      throw new Error();
+export enum MessageTypes {
+  Connection,
+  Disctionnection,
+  NewTemplate,
+  Submit
+}
+
+export class Message {
+  public type_: MessageTypes;
+  public data: any;
+
+  public static make(data:any): Message {
+    if(typeof data.type_ !== "number" ||
+      typeof data.data === "undefined" ||
+      !Object.keys(MessageTypes)
+           .map(v => parseInt(v, 10))
+           .filter(v => !isNaN(v))
+           .some(v => data.type_ === v)) {
+      return null;
+    }
+
+    let msg: Message =  new Message();
+    msg.type_ = data.type_;
+    msg.data = data.data;
+
+    return msg;
   }
 }
 
-function testBitcoin() {
-  const client = new Client(
-    {
-      network: "testnet",
-      username: creds.username,
-      password: creds.password
-    }
-  );
+export class Server {
+  private clients: Array<zmq.Socket>;
+  private pullSocket: zmq.Socket;
 
-  client.getBlockTemplate()
-  .then((results:BlockTemplate) => {
-    let template:Template = new Template(results);
-    console.log(template);
-  }).catch((error:any) => {
-    console.error(error);
-  });
+  constructor(address: string) {
+    this.pullSocket = this.createPullSocket(address);
+  }
+
+  public start = function(): void {
+    this.pullSocket.on("message", this.manageNewMessage);
+  }
+
+  public stop = function(): void {
+    this.pullSocket.removeAllListeners();
+  }
+
+  private manageNewMessage = function(msg: any): void {
+    let message: Message = Message.make(JSON.parse(msg.toString()));
+    if(!message) return;
+
+    switch(message.type_) {
+      case MessageTypes.Connection:
+        console.log(message);
+        break
+      default:
+        console.log("ok");
+    }
+  }
+
+  private createPullSocket = function(address: string): zmq.Socket {
+    let sock = zmq.socket("pull");
+    sock.connect(address);
+
+    return sock;
+  }
+
+  private createPubSocket = function(address: string): zmq.Socket {
+    let sock = zmq.socket("pub");
+    sock.bindSync(address);
+
+    return sock;
+  }
+
+  private newConnection = function( connection: Message): void {
+    assert(typeof connection.data === "string");
+    this.clients.push(this.createPullSocket(connection.data));
+  }
 }
 
-testZmq(<zmq.types>process.argv[2] || "push");
+
