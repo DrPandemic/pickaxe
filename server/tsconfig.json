@@ -7,7 +7,7 @@
         "preserveConstEnums": true,
         "outDir": "release",
         "sourceMap": true,
-        "target": "es5",
+        "target": "es6",
         "src": "src",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true

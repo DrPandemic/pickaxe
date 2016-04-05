@@ -3,10 +3,10 @@
 
 import * as zmq from "zmq";
 const assert = require('assert');
+import {connectToBC} from "./bitcoin_helper";
+import {BlockTemplate, Template} from "./template";
 
 export enum MessageTypes {
-  Connection,
-  Disctionnection,
   NewTemplate,
   Submit
 }
@@ -22,6 +22,7 @@ export class Message {
            .map(v => parseInt(v, 10))
            .filter(v => !isNaN(v))
            .some(v => data.type_ === v)) {
+      console.error("Packet was malformed");
       return null;
     }
 
@@ -36,50 +37,86 @@ export class Message {
 export class Server {
   private clients: Array<zmq.Socket>;
   private pullSocket: zmq.Socket;
+  private pubSocket: zmq.Socket;
+  private BCClient: any;
+  private previousTemplate: any = null;
+  private finished: boolean = false;
 
   constructor(address: string) {
-    this.pullSocket = this.createPullSocket(address);
+    this.pubSocket = this.createPubSocket(address);
+    this.BCClient = connectToBC();
   }
 
-  public start = function(): void {
-    this.pullSocket.on("message", this.manageNewMessage);
+  public start(): Promise<any> {
+    return this.run();
   }
 
-  public stop = function(): void {
-    this.pullSocket.removeAllListeners();
+  public stop(): void {
+    this.finished = true;
   }
 
-  private manageNewMessage = function(msg: any): void {
+  private run(): Promise<any> {
+    console.log("Running like there is no tomorrow");
+
+    if(this.finished) throw new Error("Finished!");
+
+    return this.getBlockTemplate()
+      .then((template: Template) => {
+        console.log(template);
+        this.broadcastTemplate(template);
+
+        return this.delay();
+      }).then(() => {
+        return this.run();
+      }).catch((error: any) => {
+        console.error(error);
+      });
+  }
+
+  private delay(): Promise<any> {
+    return new Promise(resolve => setTimeout(resolve, 5 * 1000));
+  }
+
+  private getBlockTemplate(): Promise<Template> {
+    return this.BCClient.getBlockTemplate()
+    .then((results:BlockTemplate) => {
+      let template:Template = new Template(results);
+
+      return template;
+    });
+  }
+
+  private manageNewMessage(msg: any): void {
     let message: Message = Message.make(JSON.parse(msg.toString()));
     if(!message) return;
 
     switch(message.type_) {
-      case MessageTypes.Connection:
-        console.log(message);
-        break
       default:
         console.log("ok");
+        break;
     }
   }
 
-  private createPullSocket = function(address: string): zmq.Socket {
+  private createPullSocket(address: string): zmq.Socket {
     let sock = zmq.socket("pull");
     sock.connect(address);
 
     return sock;
   }
 
-  private createPubSocket = function(address: string): zmq.Socket {
+  private createPubSocket(address: string): zmq.Socket {
     let sock = zmq.socket("pub");
     sock.bindSync(address);
 
     return sock;
   }
 
-  private newConnection = function( connection: Message): void {
-    assert(typeof connection.data === "string");
-    this.clients.push(this.createPullSocket(connection.data));
+  private broadcastTemplate(template: Template): void {
+     let message: Message = new Message();
+
+     message.type_ = MessageTypes.NewTemplate;
+     message.data = template;
+
+     this.pubSocket.send(JSON.stringify(message));
   }
 }
-
-
