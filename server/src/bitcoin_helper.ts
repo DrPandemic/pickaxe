@@ -7,9 +7,10 @@ import * as Client from "bitcoin-core";
 export function connectToBC(): any {
   return new Client(
     {
-      network: "testnet",
-      username: creds.username,
-      password: creds.password
+      network: "regtest",
+      username: "username",
+      password: "password",
+      port: 16593
     }
   );
 }

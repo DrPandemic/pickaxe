@@ -46,7 +46,7 @@ declare module "bitcoin-core" {
         host?: string,
         network?: string,
         password?: string,
-        port?: string,
+        port?: number,
         ssl?: boolean,
         timeout?: number,
         username?: string,
@@ -57,6 +57,7 @@ declare module "bitcoin-core" {
     interface Client {
       getWork(): any;
       getBlockTemplate(): Promise<BlockTemplate>;
+      submitBlock(block: string): Promise<any>;
     }
   }
 

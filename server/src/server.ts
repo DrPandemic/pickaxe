@@ -6,34 +6,6 @@ const assert = require('assert');
 import {connectToBC} from "./bitcoin_helper";
 import {BlockTemplate, Template} from "./template";
 
-export enum MessageTypes {
-  NewTemplate,
-  Submit
-}
-
-export class Message {
-  public type_: MessageTypes;
-  public data: any;
-
-  public static make(data:any): Message {
-    if(typeof data.type_ !== "number" ||
-      typeof data.data === "undefined" ||
-      !Object.keys(MessageTypes)
-           .map(v => parseInt(v, 10))
-           .filter(v => !isNaN(v))
-           .some(v => data.type_ === v)) {
-      console.error("Packet was malformed");
-      return null;
-    }
-
-    let msg: Message =  new Message();
-    msg.type_ = data.type_;
-    msg.data = data.data;
-
-    return msg;
-  }
-}
-
 export class Server {
   private clients: Array<zmq.Socket>;
   private pullSocket: zmq.Socket;
@@ -42,27 +14,37 @@ export class Server {
   private previousTemplate: any = null;
   private finished: boolean = false;
 
-  constructor(address: string) {
-    this.pubSocket = this.createPubSocket(address);
+  constructor(host: string, port: number) {
+    this.pubSocket = this.createPubSocket(host + port);
     this.BCClient = connectToBC();
+    this.pullSocket = this.createPullSocket(host + (port + 1));
   }
 
   public start(): Promise<any> {
+    console.log("Running like there is no tomorrow");
+
+    this.pullSocket.on("message", (block: Buffer) => {
+      console.log("Received a block", block.toString());
+
+      if(this.finished)
+        return;
+
+      this.submitBlock(block.toString());
+    });
+
     return this.run();
   }
 
   public stop(): void {
+    this.pullSocket.removeAllListeners();
     this.finished = true;
   }
 
   private run(): Promise<any> {
-    console.log("Running like there is no tomorrow");
-
     if(this.finished) throw new Error("Finished!");
 
     return this.getBlockTemplate()
       .then((template: Template) => {
-        console.log(template);
         this.broadcastTemplate(template);
 
         return this.delay();
@@ -86,20 +68,9 @@ export class Server {
     });
   }
 
-  private manageNewMessage(msg: any): void {
-    let message: Message = Message.make(JSON.parse(msg.toString()));
-    if(!message) return;
-
-    switch(message.type_) {
-      default:
-        console.log("ok");
-        break;
-    }
-  }
-
   private createPullSocket(address: string): zmq.Socket {
     let sock = zmq.socket("pull");
-    sock.connect(address);
+    sock.bindSync(address);
 
     return sock;
   }
@@ -112,11 +83,19 @@ export class Server {
   }
 
   private broadcastTemplate(template: Template): void {
-     let message: Message = new Message();
+     this.pubSocket.send(JSON.stringify(template));
+  }
 
-     message.type_ = MessageTypes.NewTemplate;
-     message.data = template;
-
-     this.pubSocket.send(JSON.stringify(message));
+  public submitBlock(block: string): Promise<void> {
+    return this.BCClient.submitBlock(block)
+      .then((msg: any) => {
+        if(msg)
+          console.log(msg);
+        else
+          console.log("The block was submitted");
+      })
+      .catch((error: any) => {
+        console.error(error);
+      });
   }
 }
