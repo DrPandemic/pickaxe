@@ -21,13 +21,9 @@ declare module "zmq" {
 
   export interface Socket extends EventEmitter {
     bindSync(address: string): Socket;
-
     send(data: any, flag?: number): void;
-
     connect(address: string, callback?: Function): Socket;
-
     close(): Socket;
-
     subscribe(channel: string): void;
   }
 
