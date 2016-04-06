@@ -22,6 +22,7 @@ class MerkleTree:
         hashes = list(map(lambda t: to_internal_byte_order(t.hash),
                           transactions))
         self.root = to_rpc_byte_order(self._build_tree(hashes))
+        self.transactions = transactions
 
     def _build_tree(self, hashes):
         """
