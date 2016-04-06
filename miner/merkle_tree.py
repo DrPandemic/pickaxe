@@ -31,6 +31,8 @@ class MerkleTree:
         :returns:      the computed root of the merkle tree
         """
         assert(hashes)
+
+        # if we have our root hash, we're done
         if len(hashes) == 1:
             return hashes[0]
 
