@@ -11,9 +11,7 @@ if(process.argv[2] === "client") {
   let sock = zmq.socket("sub");
   sock.connect(ADDRESS);
   sock.subscribe("");
-  console.log(45);
   sock.on('message', function(data:any) {
-    console.log(85);
     console.log(data.toString());
   });
 } else {
