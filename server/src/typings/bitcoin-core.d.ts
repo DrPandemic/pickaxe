@@ -1,8 +1,11 @@
-/// <reference path="../../typings/es6-promise/es6-promise.d.ts" />
 /// <reference path="../template.ts" />
 
 declare module "bitcoin-core" {
   namespace BitcoinCore {
+    /*
+     * This is a code duplication with the template definition, but I don't know
+     * how not to.
+     */
     interface Coinbaseaux {
       flag: string;
     }

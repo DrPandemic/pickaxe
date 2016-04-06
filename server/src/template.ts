@@ -1,3 +1,8 @@
+/*
+ * This is a code duplication with the bitcore definition, but I don't know how
+ * not to.
+ */
+
 export interface Coinbaseaux {
   flag: string;
 }

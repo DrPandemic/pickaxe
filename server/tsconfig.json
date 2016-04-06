@@ -2,11 +2,12 @@
     "compilerOptions": {
         "module": "commonjs",
         "noImplicitAny": true,
+        "noImplicitReturns": true,
         "removeComments": true,
         "preserveConstEnums": true,
         "outDir": "release",
         "sourceMap": true,
-        "target": "es5",
+        "target": "es6",
         "src": "src",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true
