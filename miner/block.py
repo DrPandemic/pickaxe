@@ -1,6 +1,6 @@
 from struct import pack
 
-from helpers import to_internal_byte_order
+from helpers import to_internal_byte_order, encode_var_int
 
 
 class Block:
@@ -46,3 +46,17 @@ class Block:
                 pack("<I", self.time) +
                 pack("<I", self.difficulty) +
                 pack("<I", self.nounce))
+
+    def serialize(self):
+        """
+        Serialize the block into a chunk of data that can be submited to the
+        bitcoin client.
+        """
+        serialized = bytearray()
+
+        serialized.extend(self.serialize_header())
+        serialized.extend(encode_var_int(len(self.merkle_tree.transactions)))
+        for tx in self.merkle_tree.transactions:
+            serialized.extend(tx.data)
+
+        return bytes(serialized)

@@ -8,6 +8,11 @@ class TestBlock(unittest.TestCase):
     class MerkleTreeMock:
         def __init__(self):
             self.root = bytes([42] * 32)
+            self.transactions = []
+
+    class TransactionMock:
+        def __init__(self, data):
+            self.data = data
 
     def test_init(self):
         prev = bytes([123] * 32)
@@ -68,3 +73,45 @@ class TestBlock(unittest.TestCase):
 
         b.serialize_header()
         # no exception raised -> success
+
+    def test_serialize_block(self):
+        # example taken from:
+        # https://bitcoin.org/en/developer-reference#submitblock
+        tree = TestBlock.MerkleTreeMock()
+        tree.root = to_rpc_byte_order(bytes.fromhex(
+            "4a6f6a2db225c81e77773f6f0457bcb05865a94900ed11356d0b75228efb38c7"
+        ))
+        prev = to_rpc_byte_order(bytes.fromhex(
+            "df11c014a8d798395b5059c722ebdf3171a4217ead71bf6e0e99f4c700000000"
+        ))
+        time = 0x53605d78
+        target = 0x1d00ffff
+        nounce = 0x70435d00
+        transactions = [TestBlock.TransactionMock(bytes.fromhex(
+            "0100000001000000000000000000000000000000000000000000000000000"
+            "0000000000000ffffffff0d03b477030164062f503253482fffffffff0100"
+            "f9029500000000232103adb7d8ef6b63de74313e0cd4e07670d09a169b13e"
+            "4eda2d650f529332c47646dac00000000"
+        ))]
+        tree.transactions = transactions
+
+        block = Block(prev, tree, time, target)
+        block.nounce = nounce
+
+        serialized = bytes.fromhex(
+            "02000000df11c014a8d798395b5059c"
+            "722ebdf3171a4217ead71bf6e0e99f4"
+            "c7000000004a6f6a2db225c81e77773"
+            "f6f0457bcb05865a94900ed11356d0b"
+            "75228efb38c7785d6053ffff001d005"
+            "d437001010000000100000000000000"
+            "0000000000000000000000000000000"
+            "0000000000000000000ffffffff0d03"
+            "b477030164062f503253482ffffffff"
+            "f0100f9029500000000232103adb7d8"
+            "ef6b63de74313e0cd4e07670d09a169"
+            "b13e4eda2d650f529332c47646dac00"
+            "000000"
+        )
+
+        self.assertEqual(serialized, block.serialize())
