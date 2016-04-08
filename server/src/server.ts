@@ -1,8 +1,9 @@
 /// <reference path="typings/zmq.d.ts"/>
 /// <reference path="../typings/node/node.d.ts"/>
 
-import * as zmq from "zmq";
 const assert = require('assert');
+const crypto = require('crypto');
+import * as zmq from "zmq";
 import {connectToBC} from "./bitcoin_helper";
 import {BlockTemplate, Template} from "./template";
 
@@ -45,6 +46,7 @@ export class Server {
 
     return this.getBlockTemplate()
       .then((template: Template) => {
+        template = this.updateTemplate(template);
         this.broadcastTemplate(template);
 
         return this.delay();
@@ -80,6 +82,29 @@ export class Server {
     sock.bindSync(address);
 
     return sock;
+  }
+
+  private updateTemplate(template: Template): Template {
+    template.hash = crypto.createHash("sha256")
+      .update(JSON.stringify(template))
+      .digest("hex");
+
+    const cb0 = "03";                                       // push
+    const cb1 = this.toLittleEndianNumber(template.height); // height
+    const cb2 = "0".repeat(80);                             // extra nonce
+    const cb3 = "2f503253482f";                             // vote
+    template.coinbase = cb0 + cb1 + cb2 + cb3;              // coinbase
+
+    return template;
+  }
+
+  // http://stackoverflow.com/a/7946195/1779927
+  private toLittleEndianNumber(height: number): string {
+    let hex = height.toString(16);          // translate to hexadecimal notation
+    hex = hex.replace(/^(.(..)*)$/, "0$1"); // add a leading zero if needed
+    let groups = hex.match(/../g);          // split number in groups of two
+    groups.reverse();                       // reverse the groups
+    return groups.join("");                 // join the groups back together
   }
 
   private broadcastTemplate(template: Template): void {
