@@ -37,6 +37,9 @@ export class BlockTemplate {
 }
 
 export class Template extends BlockTemplate {
+  hash: string;
+  coinbase: string;
+
   constructor(obj: BlockTemplate) {
     super();
     for (let propName in obj) {
