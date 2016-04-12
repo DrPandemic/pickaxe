@@ -89,11 +89,12 @@ export class Server {
       .update(JSON.stringify(template))
       .digest("hex");
 
-    const cb0 = "03";                                       // push
-    const cb1 = this.toLittleEndianNumber(template.height); // height
-    const cb2 = "0".repeat(80);                             // extra nonce
-    const cb3 = "2f503253482f";                             // vote
-    template.coinbase = cb0 + cb1 + cb2 + cb3;              // coinbase
+    const height: string = this.toLittleEndianNumber(template.height);
+    const cb0 = "0" + height.length / 2;        // height size in byte (2 bytes)
+    const cb1 = height;                         // height
+    const cb2 = "0".repeat(86 - height.length); // extra nonce
+    const cb3 = "2f503253482f";                 // vote (12 bytes)
+    template.coinbase = cb0 + cb1 + cb2 + cb3;  // coinbase
 
     return template;
   }
