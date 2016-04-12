@@ -90,11 +90,14 @@ export class Server {
       .digest("hex");
 
     const height: string = this.toLittleEndianNumber(template.height);
-    const cb0 = "0" + height.length / 2;        // height size in byte (2 bytes)
+    const cb0 = "0" + height.length / 2;        // height size in byte (1 byte)
     const cb1 = height;                         // height
-    const cb2 = "0".repeat(86 - height.length); // extra nonce
-    const cb3 = "2f503253482f";                 // vote (12 bytes)
+    const cb2 = "0".repeat(186 - height.length);// extra nonce
+    const cb3 = "2f503253482f";                 // vote (6 bytes)
     template.coinbase = cb0 + cb1 + cb2 + cb3;  // coinbase
+
+    assert(template.coinbase.length / 2 >= 2);
+    assert(template.coinbase.length / 2 <= 100);
 
     return template;
   }
