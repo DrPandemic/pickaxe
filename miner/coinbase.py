@@ -25,7 +25,3 @@ def calculate_block_reward(height, transactions):
     reward = START_BLOCK_SUBSIDY >> halvings
 
     return reward + fees
-
-
-def serialize_coinbase_transaction(miner_address, height, transactions):
-    pass
