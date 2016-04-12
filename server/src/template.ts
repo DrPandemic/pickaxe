@@ -36,9 +36,19 @@ export class BlockTemplate {
   [key: string]: any;
 }
 
+export interface ReceivedAddress {
+  address: string;
+  account: string;
+  amount: number;
+  confirmations: number;
+  label: string;
+  txids: Array<string>;
+}
+
 export class Template extends BlockTemplate {
   hash: string;
   coinbase: string;
+  address: string;
 
   constructor(obj: BlockTemplate) {
     super();
