@@ -35,10 +35,28 @@ class ProtocolTest(unittest.TestCase):
 
         target = (0x7fffff0 *
                   0x1000000000000000000000000000000000000000000000000000000000)
+        prev = bytes.fromhex(
+            "08fc937d6edb19bc95f12f93e9fd49d83f93478c0b70ed8869fe49b289b40d9c"
+        )
         task = parse_mining_task(response)
+        tx1_data = bytes.fromhex(
+            "0100000001990ff0c35f0278c194cefb97ad8176684002b6fcd2d2c1aab41f01"
+            "c8cc06b4fc0000000049483045022100c21c06c729896c42ba5217f5761718bf"
+            "a858b0be9d96367fc5941c3cd6fd91540220372dfd16084e37016ed92ce2f0ea"
+            "881b1b40043b42287486cdb954df6caa921f01feffffff0200ca9a3b00000000"
+            "1976a914f9878e9c0bc5f2021707c48b2571eab9ac550c4a88ac00196bee0000"
+            "00001976a91433a201e0719ca8de5cbed9d0a4313013dd54bdf788ac65000000"
+        )
+        tx1_fee = 3840
+        time = 1460484709
+        bits = 0x207fffff
 
         self.assertEqual(target, task.target)
-        self.assertIsNotNone(task.block)
+        self.assertEqual(prev, task.block.previous_block_hash)
+        self.assertEqual(tx1_data, task.block.merkle_tree.transactions[1].data)
+        self.assertEqual(tx1_fee, task.block.merkle_tree.transactions[1].fee)
+        self.assertEqual(time, task.block.time)
+        self.assertEqual(bits, task.block.difficulty)
 
     def test_compose(self):
         serialized = bytes([0x42, 0x27, 0x12])

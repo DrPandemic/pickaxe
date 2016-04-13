@@ -8,13 +8,13 @@ class Transaction:
     In the context of a simple miner, we only care about a small subset of the
     information of a transaction.
     """
-    def __init__(self, data, fees=0):
+    def __init__(self, data, fee=0):
         """
         Creates a transaction.
         :param data: raw bytes of the serialized transaction
-        :param fees: mining fees that can be collected from adding this
+        :param fee:  mining fee that can be collected from adding this
                      transaction to a mined block
         """
         self.data = data
         self.hash = sha256(sha256(data).digest()).digest()
-        self.fees = fees
+        self.fee = fee
