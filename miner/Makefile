@@ -7,4 +7,4 @@ test:
 	python -m $(UNIT_TESTS)
 
 coverage:
-	coverage run -m --branch $(UNIT_TESTS)
+	coverage run --source . -m --branch $(UNIT_TESTS)
