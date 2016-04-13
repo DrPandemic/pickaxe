@@ -16,4 +16,4 @@ def p2pkh_address_to_pubkey_hash(address):
     # check that it is a mainnet or testnet P2PKH address
     assert(decoded[0] in [0x00, 0x6F])
 
-    return decoded[1:]
+    return decoded[1:]  # skip version byte
