@@ -11,7 +11,7 @@ class ScriptTest(unittest.TestCase):
             "89ABCDEFABBAABBAABBAABBAABBAABBAABBAABBA"
         )
         expected = bytes.fromhex(
-            "76A81489ABCDEFABBAABBAABBAABBAABBAABBAABBAABBA88AC"
+            "76A91489ABCDEFABBAABBAABBAABBAABBAABBAABBAABBA88AC"
         )
 
         self.assertEqual(expected, pay_pubkey_hash_script(hash_))
