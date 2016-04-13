@@ -1,37 +1,9 @@
-from bitcoin import (START_BLOCK_SUBSIDY,
-                     BLOCK_SUBSIDY_HALVING_INTERVAL,
-                     BLOCK_SUBSIDY_MAX_HALVINGS)
 from script import pay_pubkey_hash_script
 from struct import pack
 from helpers import encode_var_int
 
 
-def calculate_block_reward(height, transactions):
-    """
-    Calculates the amount of satoshis that can be spent from a coinbase
-    transaction.
-
-    This depends on the amount of satoshis mined (based on current height)
-    and transaction fees included in the mined block.
-
-    :param height:         current height of the blockchain
-    :param transactions:   transactions included in the mined block
-    :returns:              reward (in satoshis) produced by the coinbase
-                           transaction
-    """
-    halvings = height // BLOCK_SUBSIDY_HALVING_INTERVAL
-    fees = sum(tx.fees for tx in transactions)
-
-    if halvings >= BLOCK_SUBSIDY_MAX_HALVINGS:
-        return fees
-
-    reward = START_BLOCK_SUBSIDY >> halvings
-
-    return reward + fees
-
-
-def serialize_coinbase_transaction(pubkey_hash, coinbase_data, height,
-                                   transactions):
+def serialize_coinbase_transaction(pubkey_hash, coinbase_data, reward):
     """
     Generates a serialized coinbase transaction to be included as a
     transaction in a mined block.
@@ -40,13 +12,9 @@ def serialize_coinbase_transaction(pubkey_hash, coinbase_data, height,
                           transaction
     :param coinbase_data: data to include in the coinbase input
                           (contains the extranounce)
-    :param height:        current height of the block chain, used to determine
-                          the block reward
-    :param transactions:  list of transactions that will be included in the
-                          block of this coinbase transaction, used to determine
-                          the block reward
+    :param reward:        reward (in satoshis) awarded to the miner of the
+                          block that will contain this coinbase transaction
     """
-    reward = calculate_block_reward(height, transactions)
     pubkey_script = pay_pubkey_hash_script(pubkey_hash)
 
     VERSION = 1
