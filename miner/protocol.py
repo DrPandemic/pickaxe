@@ -39,7 +39,7 @@ def compose_mining_result(serialized_block):
     :returns:                string containing the message to send to the pool
                              leader
     """
-    block = ''.join('{:02x}'.format(byte) for byte in serialized_block)
+    block = serialized_block.hex()
     response = {'block': block}
 
     return json.dumps(response)
