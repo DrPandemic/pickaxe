@@ -15,4 +15,6 @@ def pay_pubkey_hash_script(pubkey_hash):
 
     serialized_hash = bytes([len(pubkey_hash)]) + pubkey_hash
 
-    return OP_DUP + OP_HASH160 + serialized_hash + OP_EQUAL_VERIFY + OP_CHECKSIG
+    return (OP_DUP + OP_HASH160 +
+            serialized_hash +
+            OP_EQUAL_VERIFY + OP_CHECKSIG)
