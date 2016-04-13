@@ -1,3 +1,6 @@
+from hashlib import sha256
+
+
 class Transaction:
     """
     Represents a Bitcoin transaction that is contained in a block.
@@ -13,4 +16,5 @@ class Transaction:
                      transaction to a mined block
         """
         self.data = data
+        self.hash = sha256(sha256(data).digest()).digest()
         self.fees = fees
