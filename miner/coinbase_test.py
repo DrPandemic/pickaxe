@@ -23,7 +23,7 @@ class CoinbaseTest(unittest.TestCase):
             "01"
             "00F2052A01000000"
             "19"
-            "76a814" + pubkey_hash_hex + "88ac"
+            "76a914" + pubkey_hash_hex + "88ac"
             "00000000"
         )
         serialized = serialize_coinbase_transaction(pubkey_hash, coinbase_data,

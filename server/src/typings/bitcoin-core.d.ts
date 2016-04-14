@@ -54,10 +54,21 @@ declare module "bitcoin-core" {
       }): Client;
     }
 
+    interface ReceivedAddress {
+      address: string;
+      account: string;
+      amount: number;
+      confirmations: number;
+      label: string;
+      txids: Array<string>;
+    }
+
     interface Client {
       getWork(): any;
       getBlockTemplate(): Promise<BlockTemplate>;
       submitBlock(block: string): Promise<any>;
+      listReceivedByAddress(minConf?:number, includeEmpty?: boolean):
+        Promise<Array<ReceivedAddress>>;
     }
   }
 
