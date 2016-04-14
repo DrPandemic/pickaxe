@@ -1,6 +1,6 @@
 from hashlib import sha256
 
-from helpers import to_internal_byte_order, to_rpc_byte_order
+from helpers import to_rpc_byte_order
 
 
 class MerkleTree:
@@ -19,8 +19,7 @@ class MerkleTree:
                              The first transaction in the list should be the
                              coinbase transaction.
         """
-        hashes = list(map(lambda t: to_internal_byte_order(t.hash),
-                          transactions))
+        hashes = [tx.hash for tx in transactions]
         self.root = to_rpc_byte_order(self._build_tree(hashes))
         self.transactions = transactions
 
