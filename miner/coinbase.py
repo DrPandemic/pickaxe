@@ -8,8 +8,8 @@ def serialize_coinbase_transaction(pubkey_hash, coinbase_data, reward):
     Generates a serialized coinbase transaction to be included as a
     transaction in a mined block.
 
-    :param pubkey_hash:   SHA256 of the public key that can claim this coinbase
-                          transaction
+    :param pubkey_hash:   HASH160 of the public key that can claim this
+                          coinbase transaction
     :param coinbase_data: data to include in the coinbase input
                           (contains the extranounce)
     :param reward:        reward (in satoshis) awarded to the miner of the
