@@ -6,7 +6,7 @@ import {BlockTemplate, Template} from "./template";
 import * as zmq from "zmq";
 import {Server} from "./server";
 const HOST: string = "tcp://127.0.0.1:";
-const PORT: number = 3000;
+const PORT: number = 8080;
 
 if(process.argv[2] === "client") {
   let socket = zmq.socket("push");
