@@ -1,7 +1,6 @@
 /// <reference path="typings/bitcoin-core.d.ts"/>
 /// <reference path="../typings/node/node.d.ts"/>
 
-const creds = require("./credentials.json");
 import * as Client from "bitcoin-core";
 
 export function connectToBC(): any {

@@ -1,11 +1,12 @@
 import unittest
+import json
 
 from protocol import parse_mining_task, compose_mining_result
 
 
 class ProtocolTest(unittest.TestCase):
     def test_parse(self):
-        response = """
+        response = json.loads("""
 {
   "capabilities": [ "proposal" ],
   "version": 4,
@@ -31,7 +32,7 @@ class ProtocolTest(unittest.TestCase):
   "address": "mzHbFZ7xqX4yhJWyvKNCwXbNLmB21w81gd",
   "coinbase": "016600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002f503253482f",
   "hash": "acd05af67411ca6904817cd084bd999bf8fd23473eb986d69ddbbc3aaa5f560c" }
-        """
+        """)
 
         target = (0x7fffff0 *
                   0x1000000000000000000000000000000000000000000000000000000000)
@@ -63,4 +64,4 @@ class ProtocolTest(unittest.TestCase):
 
         response = compose_mining_result(serialized)
 
-        self.assertEqual('{"block": "422712"}', response)
+        self.assertEqual('422712', response)
