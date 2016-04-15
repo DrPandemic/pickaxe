@@ -31,9 +31,12 @@ export class Server {
         return;
 
       this.submitBlock(block.toString());
+
+      // immediately query for the next block
+      this.run(false);
     });
 
-    return this.run();
+    return this.run(true);
   }
 
   public stop(): void {
@@ -41,7 +44,7 @@ export class Server {
     this.finished = true;
   }
 
-  private run(): Promise<any> {
+  private run(repeat: boolean): Promise<any> {
     if(this.finished) throw new Error("Finished!");
 
     return this.getBlockTemplate()
@@ -50,9 +53,9 @@ export class Server {
       }).then((template: Template) => {
         this.broadcastTemplate(template);
 
-        return this.delay();
+        return repeat ? this.delay() : Promise.resolve();
       }).then(() => {
-        return this.run();
+        return repeat ? this.run(true) : Promise.resolve();
       }).catch((error: any) => {
         console.error(error);
       });
