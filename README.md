@@ -19,7 +19,7 @@ Bitcoin Mining Pool
 ## Server
 ### Install
 - Install the system library `zeromq`
-- Install an up to date node
+- Install an up-to-date node
 - `npm install -g typescript`
 - `npm install -g tsd`
 - `npm install -g gulp`
