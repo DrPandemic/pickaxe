@@ -12,7 +12,6 @@ export class Server {
   private pullSocket: zmq.Socket;
   private pubSocket: zmq.Socket;
   private BCClient: any;
-  private previousTemplate: any = null;
   private finished: boolean = false;
 
   constructor(host: string, port: number) {
