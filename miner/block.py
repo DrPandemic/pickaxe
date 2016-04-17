@@ -7,7 +7,7 @@ class Block:
     """
     Bitcoin block that we want to ultimately find a hash for as a miner.
     """
-    VERSION = 2
+    VERSION = 4
 
     def __init__(self, previous_block_hash, merkle_tree, time, difficulty):
         """
