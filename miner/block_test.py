@@ -48,7 +48,7 @@ class TestBlock(unittest.TestCase):
         b.nounce = nounce
 
         header = bytes.fromhex(
-            "02000000"
+            "04000000"
             "b6ff0b1b1680a2862a30ca44d346d9e8910d334beb48ca0c0000000000000000"
             "9d10aa52ee949386ca9385695f04ede270dda20810decd12bc9b048aaab31471"
             "24d95a54"
@@ -99,7 +99,7 @@ class TestBlock(unittest.TestCase):
         block.nounce = nounce
 
         serialized = bytes.fromhex(
-            "02000000df11c014a8d798395b5059c"
+            "04000000df11c014a8d798395b5059c"
             "722ebdf3171a4217ead71bf6e0e99f4"
             "c7000000004a6f6a2db225c81e77773"
             "f6f0457bcb05865a94900ed11356d0b"
